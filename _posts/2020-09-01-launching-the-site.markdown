@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Launching the Portfolio Site with Github Pages and Jekyll!"
+title:  "Launching the Portfolio Site with Github Pages and Jekyll"
 date:   2020-09-01 15:13:12 -0600
 --- 
 
