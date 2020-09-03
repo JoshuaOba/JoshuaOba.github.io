@@ -101,7 +101,7 @@ for i in range(len(unique_countries)):
     country_confirmed_cases[i] = latest_confirmed[confirmed_cases['Country/Region']==unique_countries[i]].sum()
 {% endhighlight %}
 
-At this point, we can ask jupyter to output this organized data in a variety of ways, whether that's pie charts or graphs. However, we want to visualize it using Google Maps. We start by loading in the countries geometries in geojson and making a list with the countries and cases, similar to the previous step:
+At this point, we can ask jupyter to output this organized data in a variety of ways, whether that's pie charts or graphs. However, we want to visualize it on a Chloropleth Map using Google Maps. We start by loading in the countries geometries in geojson and making a list with the countries and cases, similar to the previous step:
 
 {% highlight python %}
 countries_geojson = gmaps.geojson_geometries.load_geometry('countries')
@@ -111,3 +111,63 @@ for i in range(len(unique_countries)):
     country_and_cases[unique_countries[i]] = country_confirmed_cases[i]
 {% endhighlight %}
 
+We then want to assign a color to each country depending on the number of cases it has respective to other countries. So we scale the values between 0 and 1 and assign it a color from matplotlib:
+
+{% highlight python %}
+from matplotlib.cm import viridis
+from matplotlib.colors import to_hex
+
+min_gini = min(country_and_cases.values())
+max_gini = max(country_and_cases.values())
+gini_range = max_gini - min_gini
+
+def calculate_color(gini):
+    """
+    Convert the data to a color
+    """
+    # make gini a number between 0 and 1
+    normalized_gini = (gini - min_gini) / gini_range
+
+    # invert gini so that high inequality gives dark color
+    inverse_gini = 1.0 - normalized_gini
+
+    # transform the data to a matplotlib color
+    mpl_color = viridis(inverse_gini)
+
+    # transform from a matplotlib color to a valid CSS color
+    gmaps_color = to_hex(mpl_color, keep_alpha=False)
+
+    return gmaps_color
+{% endhighlight %}
+
+Here we assign the colors from the previous step and check for potential holes in our data. If the program cannot find a value for a country, or the country's name in the data file does not match the one provided from countries_geojson, it will be output as text and assigned a default color:
+
+{% highlight python %}
+colors = []
+errors = []
+for feature in countries_geojson['features']:
+    country_name = feature['properties']['name']
+    try:
+        gini = country_and_cases[country_name]
+        color = calculate_color(gini)
+    except Exception as e:
+        # no data for that country: return default color
+        color = (0, 0, 0, 1)
+        errors.append(str(e))
+    colors.append(color)
+
+errors
+{% endhighlight %}
+
+Finally, we can output our finished map:
+
+{% highlight python %}
+fig = gmaps.figure()
+gini_layer = gmaps.geojson_layer(
+    countries_geojson,
+    fill_color=colors,
+    stroke_color=colors,
+    fill_opacity=0.5)
+fig.add_layer(gini_layer)
+fig
+{% endhighlight %}
