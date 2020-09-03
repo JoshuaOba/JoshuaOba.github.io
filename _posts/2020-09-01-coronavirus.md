@@ -10,7 +10,7 @@ Taking data from John Hopkins University's Coronavirus Resource Center and analy
 
 We start by importing our libraries and data:
 
-{% highlight ruby %}
+{% highlight python %}
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -28,7 +28,7 @@ plt.style.use('seaborn')
 %matplotlib inline
 {% endhighlight %}
 
-{% highlight ruby %}
+{% highlight python %}
 confirmed_cases = pd.read_csv('Downloads/time_series_covid19_confirmed_global.csv')
 deaths_reported = pd.read_csv('Downloads/time_series_covid19_deaths_global.csv')
 recovered_cases = pd.read_csv('Downloads/time_series_covid19_recovered_global.csv')
@@ -36,7 +36,7 @@ recovered_cases = pd.read_csv('Downloads/time_series_covid19_recovered_global.cs
 
 Next, we take all the column heads and assign variables for the values corresponding to each dataset:
 
-{% highlight ruby %}
+{% highlight python %}
 cols = confirmed_cases.keys()
 
 confirmed = confirmed_cases.loc[:, cols[4]:cols[-1]]
@@ -46,7 +46,7 @@ recoveries = recovered_cases.loc[:, cols[4]:cols[-1]]
 
 Then, we create variables to sort some basic data and get some general values for the current global totals:
 
-{% highlight ruby %}
+{% highlight python %}
 dates = confirmed.keys()
 world_cases = []
 total_deaths = []
@@ -65,7 +65,7 @@ for i in dates:
 
 Cleaning up the data to make sure it's ready for the next stages or sorting:
 
-{% highlight ruby %}
+{% highlight python %}
 days_since_1_22 = np.array([i for i in range(len(dates))]).reshape(-1, 1)
 world_cases = np.array(world_cases).reshape(-1, 1)
 total_deaths = np.array(total_deaths).reshape(-1, 1)
@@ -74,7 +74,7 @@ total_recovered = np.array(total_recovered).reshape(-1, 1)
 
 We can see the latest values using a variable dedicated to the most recent data entry in each file:
 
-{% highlight ruby %}
+{% highlight python %}
 latest_confirmed = confirmed_cases[dates[-1]]
 latest_deaths = deaths_reported[dates[-1]]
 latest_recoveries = recovered_cases[dates[-1]]
@@ -82,7 +82,7 @@ latest_recoveries = recovered_cases[dates[-1]]
 
 We then want to see in our notebook the countries and their respective case numbers. We do that by listing all the unique countries in our data, attaching their respective case values, and sorting them from largest to smallest in our array:
 
-{% highlight ruby %}
+{% highlight python %}
 unique_countries = list(confirmed_cases['Country/Region'].unique())
 country_confirmed_cases = []
 no_cases = []
@@ -103,7 +103,7 @@ for i in range(len(unique_countries)):
 
 At this point, we can ask jupyter to output this organized data in a variety of ways, whether that's pie charts or graphs. However, we want to visualize it using Google Maps. We start by loading in the countries geometries in geojson and making a list with the countries and cases, similar to the previous step:
 
-{% highlight ruby %}
+{% highlight python %}
 countries_geojson = gmaps.geojson_geometries.load_geometry('countries')
 country_and_cases = {}
 
