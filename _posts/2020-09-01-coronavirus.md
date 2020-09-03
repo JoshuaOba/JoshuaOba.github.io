@@ -44,7 +44,7 @@ deaths = deaths_reported.loc[:, cols[4]:cols[-1]]
 recoveries = recovered_cases.loc[:, cols[4]:cols[-1]]
 {% endhighlight %}
 
-Then, we create variables to sort some basic data and get some general values for the current totals:
+Then, we create variables to sort some basic data and get some general values for the current global totals:
 
 {% highlight ruby %}
 dates = confirmed.keys()
@@ -62,3 +62,52 @@ for i in dates:
     mortality_rate.append(death_sum/confirmed_sum)
     total_recovered.append(recovered_sum)
 {% endhighlight %}
+
+Cleaning up the data to make sure it's ready for the next stages or sorting:
+
+{% highlight ruby %}
+days_since_1_22 = np.array([i for i in range(len(dates))]).reshape(-1, 1)
+world_cases = np.array(world_cases).reshape(-1, 1)
+total_deaths = np.array(total_deaths).reshape(-1, 1)
+total_recovered = np.array(total_recovered).reshape(-1, 1)
+{% endhighlight %}
+
+We can see the latest values using a variable dedicated to the most recent data entry in each file:
+
+{% highlight ruby %}
+latest_confirmed = confirmed_cases[dates[-1]]
+latest_deaths = deaths_reported[dates[-1]]
+latest_recoveries = recovered_cases[dates[-1]]
+{% endhighlight %}
+
+We then want to see in our notebook the countries and their respective case numbers. We do that by listing all the unique countries in our data, attaching their respective case values, and sorting them from largest to smallest in our array:
+
+{% highlight ruby %}
+unique_countries = list(confirmed_cases['Country/Region'].unique())
+country_confirmed_cases = []
+no_cases = []
+for i in unique_countries:
+    cases = latest_confirmed[confirmed_cases['Country/Region']==i].sum()
+    if cases > 0:
+        country_confirmed_cases.append(cases)
+    else:
+        no_cases.append(i)
+        
+for i in no_cases:
+    unique_countries.remove(i)
+    
+unique_countries = [k for k, v in sorted(zip(unique_countries, country_confirmed_cases), key=operator.itemgetter(1), reverse=True)]
+for i in range(len(unique_countries)):
+    country_confirmed_cases[i] = latest_confirmed[confirmed_cases['Country/Region']==unique_countries[i]].sum()
+{% endhighlight %}
+
+At this point, we can ask jupyter to output this organized data in a variety of ways, whether that's pie charts or graphs. However, we want to visualize it using Google Maps. We start by loading in the countries geometries in geojson and making a list with the countries and cases, similar to the previous step:
+
+{% highlight ruby %}
+countries_geojson = gmaps.geojson_geometries.load_geometry('countries')
+country_and_cases = {}
+
+for i in range(len(unique_countries)):
+    country_and_cases[unique_countries[i]] = country_confirmed_cases[i]
+{% endhighlight %}
+
