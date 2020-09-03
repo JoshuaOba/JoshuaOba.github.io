@@ -43,3 +43,22 @@ confirmed = confirmed_cases.loc[:, cols[4]:cols[-1]]
 deaths = deaths_reported.loc[:, cols[4]:cols[-1]]
 recoveries = recovered_cases.loc[:, cols[4]:cols[-1]]
 {% endhighlight %}
+
+Then, we create variables to sort some basic data and get some general values for the current totals:
+
+{% highlight ruby %}
+dates = confirmed.keys()
+world_cases = []
+total_deaths = []
+mortality_rate = []
+total_recovered = []
+
+for i in dates:
+    confirmed_sum = confirmed[i].sum()
+    death_sum = deaths[i].sum()
+    recovered_sum = recoveries[i].sum()
+    world_cases.append(confirmed_sum)
+    total_deaths.append(death_sum)
+    mortality_rate.append(death_sum/confirmed_sum)
+    total_recovered.append(recovered_sum)
+{% endhighlight %}
