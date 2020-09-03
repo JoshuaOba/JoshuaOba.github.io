@@ -18,9 +18,6 @@ import matplotlib.colors as mcolors
 import random
 import math
 import time
-from sklearn.model_selection import RandomizedSearchCV, train_test_split
-from sklearn.svm import SVR
-from sklearn.metrics import mean_squared_error, mean_absolute_error
 import datetime
 import operator
 import gmaps
@@ -35,4 +32,14 @@ plt.style.use('seaborn')
 confirmed_cases = pd.read_csv('Downloads/time_series_covid19_confirmed_global.csv')
 deaths_reported = pd.read_csv('Downloads/time_series_covid19_deaths_global.csv')
 recovered_cases = pd.read_csv('Downloads/time_series_covid19_recovered_global.csv')
+{% endhighlight %}
+
+Next, we take all the column heads and assign variables for the values corresponding to each dataset:
+
+{% highlight ruby %}
+cols = confirmed_cases.keys()
+
+confirmed = confirmed_cases.loc[:, cols[4]:cols[-1]]
+deaths = deaths_reported.loc[:, cols[4]:cols[-1]]
+recoveries = recovered_cases.loc[:, cols[4]:cols[-1]]
 {% endhighlight %}
