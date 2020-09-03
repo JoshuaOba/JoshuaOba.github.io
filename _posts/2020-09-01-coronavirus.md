@@ -171,3 +171,5 @@ gini_layer = gmaps.geojson_layer(
 fig.add_layer(gini_layer)
 fig
 {% endhighlight %}
+
+![coronachloropleth](C:\Portfolio\JoshuaOba.github.iocoronachloropleth.png){:class="img-responsive"}
