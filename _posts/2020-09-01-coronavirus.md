@@ -172,4 +172,4 @@ fig.add_layer(gini_layer)
 fig
 {% endhighlight %}
 
-![coronachloropleth](/assets/coronachloropleth.png)
+![coronachloropleth](/assets/Chloropleth.png)
