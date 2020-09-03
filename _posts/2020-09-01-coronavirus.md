@@ -23,7 +23,7 @@ import operator
 import gmaps
 import gmaps.datasets
 import gmaps.geojson_geometries
-gmaps.configure(api_key="AIzaSyBcns7lcFhOACDVrQGcXclTqUhP54BhuYI")
+gmaps.configure(api_key="AI...")
 plt.style.use('seaborn')
 %matplotlib inline
 {% endhighlight %}
