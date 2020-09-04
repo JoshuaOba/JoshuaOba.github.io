@@ -172,4 +172,6 @@ fig.add_layer(gini_layer)
 fig
 {% endhighlight %}
 
+On our map, we can see that Canada maintains a relatively low total case number like much of the world. With a few larger countries, namely the US, brazil, Russia, and India having larger case numbers. 
+
 ![coronachloropleth](/assets/chloropleth.jpg)
